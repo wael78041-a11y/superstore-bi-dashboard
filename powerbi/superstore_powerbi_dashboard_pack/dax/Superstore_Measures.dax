@@ -1,0 +1,36 @@
+-- Core measures
+Total Sales = SUM ( FactOrders[Sales] )
+Total Profit = SUM ( FactOrders[Profit] )
+Total Quantity = SUM ( FactOrders[Quantity] )
+Total Orders = DISTINCTCOUNT ( FactOrders[Order ID] )
+Total Customers = DISTINCTCOUNT ( DimCustomer[Customer ID] )
+Profit Margin % = DIVIDE ( [Total Profit], [Total Sales] )
+Average Discount % = AVERAGE ( FactOrders[Discount] )
+Average Ship Days = AVERAGE ( FactOrders[Ship Days] )
+
+-- Returns and risk
+Returned Orders = CALCULATE ( DISTINCTCOUNT ( FactOrders[Order ID] ), FactOrders[Returned Flag] = TRUE () )
+Return Rate % = DIVIDE ( [Returned Orders], [Total Orders] )
+Return Sales = SUM ( FactOrders[Return Sales] )
+Net Sales After Returns = SUM ( FactOrders[Net Sales After Returns] )
+Loss Lines = CALCULATE ( COUNTROWS ( FactOrders ), FactOrders[Loss Flag] = TRUE () )
+Loss Sales = CALCULATE ( [Total Sales], FactOrders[Loss Flag] = TRUE () )
+
+-- Time intelligence
+Sales YTD = TOTALYTD ( [Total Sales], DimDate[Date] )
+Profit YTD = TOTALYTD ( [Total Profit], DimDate[Date] )
+Sales LY = CALCULATE ( [Total Sales], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+Profit LY = CALCULATE ( [Total Profit], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+Sales YoY % = DIVIDE ( [Total Sales] - [Sales LY], [Sales LY] )
+Profit YoY % = DIVIDE ( [Total Profit] - [Profit LY], [Profit LY] )
+
+-- Ranking
+Product Rank by Sales = RANKX ( ALLSELECTED ( DimProduct[Product Name] ), [Total Sales], , DESC, Dense )
+Customer Rank by Sales = RANKX ( ALLSELECTED ( DimCustomer[Customer Name] ), [Total Sales], , DESC, Dense )
+State Rank by Profit = RANKX ( ALLSELECTED ( DimGeography[State] ), [Total Profit], , ASC, Dense )
+
+-- Dashboard labels
+Sales Label = FORMAT ( [Total Sales], "$#,0" )
+Profit Label = FORMAT ( [Total Profit], "$#,0" )
+Margin Label = FORMAT ( [Profit Margin %], "0.0%" )
+Return Rate Label = FORMAT ( [Return Rate %], "0.0%" )

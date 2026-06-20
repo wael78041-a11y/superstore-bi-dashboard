@@ -1,0 +1,83 @@
+{
+  "output_folder": "C:\\Users\\risk_\\Documents\\Codex\\2026-06-21\\new-chat\\outputs\\superstore_powerbi_dashboard_pack",
+  "zip": "C:\\Users\\risk_\\Documents\\Codex\\2026-06-21\\new-chat\\outputs\\superstore_powerbi_dashboard_pack.zip",
+  "tables": {
+    "FactOrders.csv": {
+      "rows": 9994,
+      "columns": [
+        "Row ID",
+        "Order ID",
+        "DateKey",
+        "ShipDateKey",
+        "ProductKey",
+        "CustomerKey",
+        "GeographyKey",
+        "ShipModeKey",
+        "Sales",
+        "Quantity",
+        "Discount",
+        "Profit",
+        "Ship Days",
+        "Profit Margin",
+        "Returned Flag",
+        "Returned",
+        "Net Sales After Returns",
+        "Return Sales",
+        "Loss Flag",
+        "Discount Band"
+      ]
+    },
+    "DimProduct.csv": {
+      "rows": 1862,
+      "columns": [
+        "ProductKey",
+        "Product ID",
+        "Product Name",
+        "Category",
+        "Sub-Category"
+      ]
+    },
+    "DimCustomer.csv": {
+      "rows": 793,
+      "columns": [
+        "CustomerKey",
+        "Customer ID",
+        "Customer Name",
+        "Segment"
+      ]
+    },
+    "DimGeography.csv": {
+      "rows": 632,
+      "columns": [
+        "GeographyKey",
+        "Country",
+        "City",
+        "State",
+        "Postal Code",
+        "Region",
+        "Person"
+      ]
+    },
+    "DimShipMode.csv": {
+      "rows": 4,
+      "columns": [
+        "ShipModeKey",
+        "Ship Mode"
+      ]
+    },
+    "DimDate.csv": {
+      "rows": 1464,
+      "columns": [
+        "DateKey",
+        "Date",
+        "Year",
+        "Quarter",
+        "Month Number",
+        "Month Name",
+        "Year Month",
+        "Weekday",
+        "Is Weekend"
+      ]
+    }
+  }
+}

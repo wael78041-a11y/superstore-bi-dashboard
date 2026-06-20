@@ -1,0 +1,43 @@
+{
+  "name": "Superstore Executive Teal",
+  "dataColors": [
+    "#0F766E",
+    "#2563EB",
+    "#F59E0B",
+    "#16A34A",
+    "#DC2626",
+    "#7C3AED",
+    "#0891B2",
+    "#64748B"
+  ],
+  "background": "#F8FAFC",
+  "foreground": "#1F2937",
+  "tableAccent": "#0F766E",
+  "visualStyles": {
+    "*": {
+      "*": {
+        "title": [
+          {
+            "fontFace": "Aptos Display",
+            "fontSize": 12,
+            "color": {
+              "solid": {
+                "color": "#1F2937"
+              }
+            }
+          }
+        ],
+        "labels": [
+          {
+            "fontFace": "Aptos",
+            "color": {
+              "solid": {
+                "color": "#1F2937"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

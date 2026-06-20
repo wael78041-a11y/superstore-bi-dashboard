@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Superstore Power BI Preview</title>
+<style>
+  :root {
+    --bg:#f8fafc; --panel:#ffffff; --ink:#1f2937; --muted:#64748b; --teal:#0f766e;
+    --teal2:#134e4a; --blue:#2563eb; --orange:#f97316; --green:#16a34a; --red:#dc2626;
+    --line:#dbe3ef;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family: "Segoe UI", Tahoma, Arial, sans-serif; background:var(--bg); color:var(--ink); }
+  header { background:var(--teal2); color:white; padding:18px 28px 14px; position:sticky; top:0; z-index:5; box-shadow:0 8px 24px #0f172a20; }
+  header h1 { margin:0; font-size:24px; letter-spacing:0; }
+  header p { margin:6px 0 0; color:#ccfbf1; font-size:13px; }
+  main { padding:22px 28px 34px; max-width:1440px; margin:auto; }
+  .kpis { display:grid; grid-template-columns: repeat(6, minmax(140px, 1fr)); gap:14px; direction:ltr; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; box-shadow:0 8px 20px #0f172a0d; }
+  .kpi { padding:14px 16px; min-height:92px; }
+  .kpi .label { color:var(--muted); font-weight:700; font-size:12px; text-transform:uppercase; }
+  .kpi .value { margin-top:12px; font-weight:800; font-size:25px; color:var(--ink); }
+  .kpi.good .value { color:var(--green); }
+  .grid { display:grid; grid-template-columns: 1.25fr .95fr; gap:16px; margin-top:16px; direction:ltr; }
+  .panel { padding:16px; min-height:360px; overflow:hidden; }
+  .panel h2 { margin:0 0 12px; font-size:16px; }
+  .chart { width:100%; height:280px; direction:ltr; }
+  .wide { grid-column:1 / -1; }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; direction:ltr; }
+  table { width:100%; border-collapse:collapse; font-size:12px; direction:ltr; }
+  th, td { padding:8px 9px; border-bottom:1px solid #edf2f7; text-align:left; white-space:nowrap; }
+  th { background:#e2e8f0; color:#334155; font-weight:800; }
+  .insights { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-top:16px; direction:ltr; }
+  .insight { padding:12px 14px; border-right:4px solid var(--teal); background:#fffbeb; border-radius:8px; border:1px solid #fde68a; font-size:12px; line-height:1.45; }
+  .axis { stroke:#cbd5e1; stroke-width:1; }
+  .gridline { stroke:#e5e7eb; stroke-width:1; stroke-dasharray:4 4; }
+  .legend { display:flex; gap:14px; font-size:12px; color:var(--muted); align-items:center; }
+  .sw { width:10px; height:10px; display:inline-block; border-radius:2px; margin-right:5px; }
+  @media (max-width: 980px) {
+    .kpis { grid-template-columns:repeat(2,1fr); }
+    .grid, .two, .insights { grid-template-columns:1fr; }
+    main { padding:16px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Superstore Sales Performance Dashboard</h1>
+  <p>Power BI-style preview | Cleaned retail orders analysis | 2015-01-03 to 2018-12-30</p>
+</header>
+<main>
+  <section class="kpis" id="kpis"></section>
+  <section class="insights" id="insights"></section>
+  <section class="grid">
+    <div class="card panel"><h2>Sales and Profit Trend</h2><div class="chart" id="trend"></div><div class="legend"><span><i class="sw" style="background:#0f766e"></i>Sales</span><span><i class="sw" style="background:#f97316"></i>Profit</span></div></div>
+    <div class="card panel"><h2>Sales and Profit by Region</h2><div class="chart" id="regions"></div><div class="legend"><span><i class="sw" style="background:#2563eb"></i>Sales</span><span><i class="sw" style="background:#16a34a"></i>Profit</span></div></div>
+  </section>
+  <section class="two">
+    <div class="card panel"><h2>Top Sub-Categories</h2><div class="chart" id="subcats"></div></div>
+    <div class="card panel"><h2>Lowest Profit States</h2><div class="chart" id="states"></div></div>
+  </section>
+  <section class="two">
+    <div class="card panel"><h2>Discount Impact</h2><div class="chart" id="discount"></div></div>
+    <div class="card panel"><h2>Top Customers</h2><table id="customers"></table></div>
+  </section>
+</main>
+<script>
+const DATA = {"summary": {"overview": {"total_sales": 2297200.86, "total_profit": 286397.02, "profit_margin": 0.1247, "orders": 5009, "customers": 793, "return_rate": 0.0591, "avg_ship_days": 3.96, "loss_order_lines": 1871}, "quality": [["Source file", "Sample-Superstore.xlsx"], ["Source URL", "https://github.com/PacktPublishing/Getting-Started-with-Tableau-2019.2/blob/master/Chapter03/Sample-Superstore.xlsx"], ["Initial order rows", 9994], ["Initial order columns", 21], ["Dropped duplicate order rows", 0], ["Missing values before cleaning", 11], ["Missing Postal Code values filled", 11], ["Unique returned orders", 296], ["Cleaned order rows", 9994], ["Cleaned missing values", 0], ["Order date range", "2015-01-03 to 2018-12-30"]], "insights": [["Best profit region", "West generated $108,418 profit on $725,458 sales."], ["Strongest sub-category", "Copiers led profit with $55,618."], ["Largest profit drag", "Tables lost $17,725, despite $206,966 in sales."], ["Worst state profitability", "Texas had $-25,729 profit and -15.1% margin."], ["Discount risk", "The 40%+ discount band had the weakest margin at -77.4%."], ["Returns", "Returned orders represent 5.9% of unique orders, with $180,504 in returned line sales."]], "source_url": "https://github.com/PacktPublishing/Getting-Started-with-Tableau-2019.2/blob/master/Chapter03/Sample-Superstore.xlsx"}, "monthly": [{"Year Month": "2017-07", "Sales": 39261.963, "Profit": 4432.8779, "Orders": 96, "Return_Sales": 3327.324, "Profit Margin": 0.1129051519915089}, {"Year Month": "2017-08", "Sales": 31115.374300000003, "Profit": 2062.0693, "Orders": 90, "Return_Sales": 1149.675, "Profit Margin": 0.0662717176440972}, {"Year Month": "2017-09", "Sales": 73410.0249, "Profit": 9328.657599999997, "Orders": 192, "Return_Sales": 4197.033, "Profit Margin": 0.127076071867672}, {"Year Month": "2017-10", "Sales": 59687.745, "Profit": 16243.142499999998, "Orders": 105, "Return_Sales": 2806.3540000000003, "Profit Margin": 0.2721353018111171}, {"Year Month": "2017-11", "Sales": 79411.9658, "Profit": 4011.4074999999975, "Orders": 183, "Return_Sales": 2104.585, "Profit Margin": 0.0505138924542275}, {"Year Month": "2017-12", "Sales": 96999.043, "Profit": 17885.309299999997, "Orders": 176, "Return_Sales": 7109.014, "Profit Margin": 0.1843864511116877}, {"Year Month": "2018-01", "Sales": 43971.374, "Profit": 7140.439099999999, "Orders": 69, "Return_Sales": 595.14, "Profit Margin": 0.1623883552058209}, {"Year Month": "2018-02", "Sales": 20301.1334, "Profit": 1613.8719999999987, "Orders": 53, "Return_Sales": 4991.621, "Profit Margin": 0.0794966452464175}, {"Year Month": "2018-03", "Sales": 58872.3528, "Profit": 14751.891499999998, "Orders": 118, "Return_Sales": 17730.95, "Profit Margin": 0.2505741795323661}, {"Year Month": "2018-04", "Sales": 36521.5361, "Profit": 933.289999999998, "Orders": 116, "Return_Sales": 1061.9556, "Profit Margin": 0.0255545111094053}, {"Year Month": "2018-05", "Sales": 44261.1102, "Profit": 6342.582799999998, "Orders": 118, "Return_Sales": 390.016, "Profit Margin": 0.1432992252417563}, {"Year Month": "2018-06", "Sales": 52981.7257, "Profit": 8223.335699999998, "Orders": 133, "Return_Sales": 5120.3745, "Profit Margin": 0.155210793747324}, {"Year Month": "2018-07", "Sales": 45264.416, "Profit": 6952.6212, "Orders": 111, "Return_Sales": 4693.232, "Profit Margin": 0.1536001524906451}, {"Year Month": "2018-08", "Sales": 63120.888000000006, "Profit": 9040.9557, "Orders": 111, "Return_Sales": 9081.738, "Profit Margin": 0.143232390837087}, {"Year Month": "2018-09", "Sales": 87866.652, "Profit": 10991.5556, "Orders": 226, "Return_Sales": 14108.569, "Profit Margin": 0.1250935975118296}, {"Year Month": "2018-10", "Sales": 77776.9232, "Profit": 9275.275499999998, "Orders": 147, "Return_Sales": 4195.534, "Profit Margin": 0.1192548524470301}, {"Year Month": "2018-11", "Sales": 118447.825, "Profit": 9690.103699999998, "Orders": 261, "Return_Sales": 6703.166, "Profit Margin": 0.0818090471479742}, {"Year Month": "2018-12", "Sales": 83829.3188, "Profit": 8483.346799999998, "Orders": 224, "Return_Sales": 6829.7678, "Profit Margin": 0.1011978496478012}], "region": [{"Region": "West", "Person": "Anna Andreadi", "Sales": 725457.8245, "Profit": 108418.44889999996, "Orders": 1611, "Customers": 686, "Return_Sales": 107483.0575, "Profit Margin": 0.1494483142072719, "Return Sales %": 0.1481589333936531}, {"Region": "East", "Person": "Chuck Magee", "Sales": 678781.24, "Profit": 91522.77999999998, "Orders": 1401, "Customers": 674, "Return_Sales": 41705.144, "Profit Margin": 0.1348339856888207, "Return Sales %": 0.0614412148455959}, {"Region": "Central", "Person": "Kelly Williams", "Sales": 501239.8908, "Profit": 39706.36249999998, "Orders": 1175, "Customers": 629, "Return_Sales": 14006.9794, "Profit Margin": 0.0792162859117756, "Return Sales %": 0.0279446621410045}, {"Region": "South", "Person": "Cassandra Brandow", "Sales": 391721.905, "Profit": 46749.43029999999, "Orders": 822, "Customers": 512, "Return_Sales": 17309.097, "Profit Margin": 0.1193434160900447, "Return Sales %": 0.0441872072484687}], "category": [{"Category": "Technology", "Sub-Category": "Phones", "Sales": 330007.054, "Profit": 44515.7306, "Quantity": 3289, "Orders": 814, "Avg_Discount": 0.1545556805399325, "Return_Sales": 27633.614, "Profit Margin": 0.1348932698874976}, {"Category": "Furniture", "Sub-Category": "Chairs", "Sales": 328449.103, "Profit": 26590.16629999999, "Quantity": 2356, "Orders": 576, "Avg_Discount": 0.1701782820097244, "Return_Sales": 25154.702, "Profit Margin": 0.0809567328914275}, {"Category": "Office Supplies", "Sub-Category": "Storage", "Sales": 223843.608, "Profit": 21278.826399999994, "Quantity": 3158, "Orders": 777, "Avg_Discount": 0.0747044917257683, "Return_Sales": 14679.928, "Profit Margin": 0.0950611303584777}, {"Category": "Furniture", "Sub-Category": "Tables", "Sales": 206965.532, "Profit": -17725.481100000005, "Quantity": 1241, "Orders": 307, "Avg_Discount": 0.2612852664576803, "Return_Sales": 17042.282, "Profit Margin": -0.0856446043392385}, {"Category": "Office Supplies", "Sub-Category": "Binders", "Sales": 203412.733, "Profit": 30221.76329999999, "Quantity": 5974, "Orders": 1316, "Avg_Discount": 0.3722915298752462, "Return_Sales": 9983.149, "Profit Margin": 0.1485736062550223}, {"Category": "Technology", "Sub-Category": "Machines", "Sales": 189238.631, "Profit": 3384.756899999988, "Quantity": 440, "Orders": 112, "Avg_Discount": 0.3060869565217391, "Return_Sales": 13158.39, "Profit Margin": 0.0178861836090961}, {"Category": "Technology", "Sub-Category": "Accessories", "Sales": 167380.318, "Profit": 41936.6357, "Quantity": 2976, "Orders": 718, "Avg_Discount": 0.0784516129032258, "Return_Sales": 12716.33, "Profit Margin": 0.2505469950176579}, {"Category": "Technology", "Sub-Category": "Copiers", "Sales": 149528.03, "Profit": 55617.82489999999, "Quantity": 234, "Orders": 68, "Avg_Discount": 0.1617647058823529, "Return_Sales": 19199.84, "Profit Margin": 0.3719558460042574}, {"Category": "Furniture", "Sub-Category": "Bookcases", "Sales": 114879.9963, "Profit": -3472.556000000003, "Quantity": 868, "Orders": 224, "Avg_Discount": 0.211140350877193, "Return_Sales": 7444.6409, "Profit Margin": -0.0302276820320545}, {"Category": "Office Supplies", "Sub-Category": "Appliances", "Sales": 107532.161, "Profit": 18138.005399999995, "Quantity": 1729, "Orders": 451, "Avg_Discount": 0.1665236051502146, "Return_Sales": 10129.782, "Profit Margin": 0.1686751687246385}, {"Category": "Furniture", "Sub-Category": "Furnishings", "Sales": 91705.164, "Profit": 13059.143599999998, "Quantity": 3563, "Orders": 877, "Avg_Discount": 0.1383490073145245, "Return_Sales": 9577.55, "Profit Margin": 0.1424035793665883}, {"Category": "Office Supplies", "Sub-Category": "Paper", "Sales": 78479.206, "Profit": 34053.5693, "Quantity": 5178, "Orders": 1191, "Avg_Discount": 0.0748905109489051, "Return_Sales": 7140.282, "Profit Margin": 0.433918371957025}, {"Category": "Office Supplies", "Sub-Category": "Supplies", "Sales": 46673.538, "Profit": -1189.0995000000007, "Quantity": 647, "Orders": 187, "Avg_Discount": 0.0768421052631579, "Return_Sales": 3195.962, "Profit Margin": -0.0254769522721847}, {"Category": "Office Supplies", "Sub-Category": "Art", "Sales": 27118.792, "Profit": 6527.786999999999, "Quantity": 3000, "Orders": 731, "Avg_Discount": 0.0748743718592964, "Return_Sales": 1429.124, "Profit Margin": 0.2407108325474084}, {"Category": "Office Supplies", "Sub-Category": "Envelopes", "Sales": 16476.402000000002, "Profit": 6964.176699999999, "Quantity": 906, "Orders": 249, "Avg_Discount": 0.0803149606299212, "Return_Sales": 919.746, "Profit Margin": 0.4226758184220073}, {"Category": "Office Supplies", "Sub-Category": "Labels", "Sales": 12486.312, "Profit": 5546.254, "Quantity": 1400, "Orders": 346, "Avg_Discount": 0.0686813186813186, "Return_Sales": 885.866, "Profit Margin": 0.4441867222283089}], "state": [{"State": "Texas", "Region": "Central", "Sales": 170188.0458, "Profit": -25729.35630000001, "Orders": 487, "Avg_Discount": 0.3701928934010152, "Profit Margin": -0.1511819245532462}, {"State": "Ohio", "Region": "East", "Sales": 78258.136, "Profit": -16971.376600000003, "Orders": 236, "Avg_Discount": 0.3249466950959488, "Profit Margin": -0.2168640535982099}, {"State": "Pennsylvania", "Region": "East", "Sales": 116511.914, "Profit": -15559.960300000004, "Orders": 288, "Avg_Discount": 0.3286201022146507, "Profit Margin": -0.1335482335308645}, {"State": "Illinois", "Region": "Central", "Sales": 80166.101, "Profit": -12607.887000000004, "Orders": 276, "Avg_Discount": 0.3900406504065041, "Profit Margin": -0.1572720494414466}, {"State": "North Carolina", "Region": "South", "Sales": 55603.164, "Profit": -7490.912200000002, "Orders": 136, "Avg_Discount": 0.2835341365461847, "Profit Margin": -0.1347209701951493}, {"State": "Colorado", "Region": "West", "Sales": 32108.118, "Profit": -6527.857900000002, "Orders": 79, "Avg_Discount": 0.3164835164835164, "Profit Margin": -0.2033086430042396}, {"State": "Tennessee", "Region": "South", "Sales": 30661.873000000003, "Profit": -5341.6936, "Orders": 91, "Avg_Discount": 0.2912568306010928, "Profit Margin": -0.1742128929958062}, {"State": "Arizona", "Region": "West", "Sales": 35282.001000000004, "Profit": -3427.924600000001, "Orders": 108, "Avg_Discount": 0.3035714285714285, "Profit Margin": -0.0971578851210848}, {"State": "Florida", "Region": "South", "Sales": 89473.708, "Profit": -3399.301700000004, "Orders": 200, "Avg_Discount": 0.2993472584856397, "Profit Margin": -0.0379921853691366}, {"State": "Oregon", "Region": "West", "Sales": 17431.15, "Profit": -1190.4705, "Orders": 56, "Avg_Discount": 0.2887096774193548, "Profit Margin": -0.0682955800391827}], "discount": [{"Discount Band": "0%", "Sales": 1087908.47, "Profit": 320987.60319999995, "Orders": 2644, "Avg_Discount": 0.0, "Profit Margin": 0.2950501922280281}, {"Discount Band": "0-10%", "Sales": 54369.351, "Profit": 9029.176999999998, "Orders": 89, "Avg_Discount": 0.1, "Profit Margin": 0.1660710829525994}, {"Discount Band": "10-20%", "Sales": 792152.8895, "Profit": 91756.29749999996, "Orders": 2436, "Avg_Discount": 0.19929900242653, "Profit Margin": 0.1158315505961428}, {"Discount Band": "20-40%", "Sales": 234137.8978, "Profit": -35817.465500000006, "Orders": 400, "Avg_Discount": 0.3459565217391304, "Profit Margin": -0.1529759421116661}, {"Discount Band": "40%+", "Sales": 128632.252, "Profit": -99558.5905, "Orders": 737, "Avg_Discount": 0.7002679528403001, "Profit Margin": -0.7739784459343836}], "topCustomers": [{"Customer Name": "Sean Miller", "Segment": "Home Office", "Sales": 25043.05, "Profit": -1980.7393000000025, "Orders": 5}, {"Customer Name": "Tamara Chand", "Segment": "Corporate", "Sales": 19052.218, "Profit": 8981.3239, "Orders": 5}, {"Customer Name": "Raymond Buch", "Segment": "Consumer", "Sales": 15117.339, "Profit": 6976.095899999999, "Orders": 6}, {"Customer Name": "Tom Ashbrook", "Segment": "Home Office", "Sales": 14595.62, "Profit": 4703.788299999999, "Orders": 4}, {"Customer Name": "Adrian Barton", "Segment": "Consumer", "Sales": 14473.570999999998, "Profit": 5444.8055, "Orders": 10}, {"Customer Name": "Ken Lonsdale", "Segment": "Consumer", "Sales": 14175.229, "Profit": 806.8549999999996, "Orders": 12}, {"Customer Name": "Sanjit Chand", "Segment": "Consumer", "Sales": 14142.334, "Profit": 5757.4119, "Orders": 9}, {"Customer Name": "Hunter Lopez", "Segment": "Consumer", "Sales": 12873.298, "Profit": 5622.4292000000005, "Orders": 6}, {"Customer Name": "Sanjit Engle", "Segment": "Consumer", "Sales": 12209.438000000002, "Profit": 2650.6768999999995, "Orders": 11}, {"Customer Name": "Christopher Conant", "Segment": "Consumer", "Sales": 12129.072, "Profit": 2177.0492999999988, "Orders": 5}, {"Customer Name": "Todd Sumrall", "Segment": "Corporate", "Sales": 11891.751, "Profit": 2371.7144, "Orders": 6}, {"Customer Name": "Greg Tran", "Segment": "Consumer", "Sales": 11820.12, "Profit": 2163.4268999999995, "Orders": 11}]};
+const fmtMoney = n => new Intl.NumberFormat('en-US', { style:'currency', currency:'USD', maximumFractionDigits:0 }).format(n || 0);
+const fmtNum = n => new Intl.NumberFormat('en-US').format(n || 0);
+const fmtPct = n => new Intl.NumberFormat('en-US', { style:'percent', maximumFractionDigits:1 }).format(n || 0);
+
+function kpis() {
+  const s = DATA.summary.overview;
+  const rows = [
+    ['Total Sales', fmtMoney(s.total_sales), ''],
+    ['Total Profit', fmtMoney(s.total_profit), 'good'],
+    ['Profit Margin', fmtPct(s.profit_margin), ''],
+    ['Unique Orders', fmtNum(s.orders), ''],
+    ['Customers', fmtNum(s.customers), ''],
+    ['Return Rate', fmtPct(s.return_rate), ''],
+  ];
+  document.querySelector('#kpis').innerHTML = rows.map(([l,v,c]) => `<div class="card kpi ${c}"><div class="label">${l}</div><div class="value">${v}</div></div>`).join('');
+  document.querySelector('#insights').innerHTML = DATA.summary.insights.map(x => `<div class="insight"><b>${x[0]}</b><br>${x[1]}</div>`).join('');
+}
+
+function svg(tag, attrs='', body='') { return `<${tag} ${attrs}>${body}</${tag}>`; }
+function lineChart(el, rows, xKey, series) {
+  const w=720,h=280,p=42, iw=w-p*2, ih=h-p*1.6;
+  const max = Math.max(...rows.flatMap(r => series.map(s => +r[s.key])));
+  const x = i => p + (rows.length === 1 ? 0 : i*iw/(rows.length-1));
+  const y = v => h-p - (+v/max)*ih;
+  const grid = [0,.25,.5,.75,1].map(t => `<line class="gridline" x1="${p}" y1="${h-p-t*ih}" x2="${w-p}" y2="${h-p-t*ih}"/>`).join('');
+  const paths = series.map(s => `<path d="${rows.map((r,i)=>`${i?'L':'M'}${x(i)},${y(r[s.key])}`).join(' ')}" fill="none" stroke="${s.color}" stroke-width="3"/>`).join('');
+  const labels = rows.filter((_,i)=>i%3===0).map((r,i)=>`<text x="${x(i*3)}" y="${h-10}" font-size="10" text-anchor="middle" fill="#64748b">${r[xKey]}</text>`).join('');
+  el.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%">${grid}${paths}${labels}</svg>`;
+}
+function barChart(el, rows, label, series, opts={}) {
+  const w=720,h=280,p=44, iw=w-p*2, ih=h-p*1.6;
+  const max = Math.max(...rows.flatMap(r => series.map(s => Math.abs(+r[s.key]))));
+  const groupW = iw/rows.length;
+  let bars='', labels='';
+  rows.forEach((r,i)=> {
+    series.forEach((s,j)=> {
+      const val = +r[s.key], bh = Math.abs(val)/max*ih;
+      const bw = Math.max(6, groupW/(series.length+1));
+      const x = p+i*groupW+j*bw+4;
+      const y0 = val >= 0 ? h-p-bh : h-p;
+      bars += `<rect x="${x}" y="${y0}" width="${bw-2}" height="${bh}" fill="${s.color}" rx="2"/>`;
+    });
+    if (i % (opts.every || 1) === 0) labels += `<text transform="translate(${p+i*groupW+groupW/2},${h-8}) rotate(-45)" font-size="10" text-anchor="end" fill="#64748b">${String(r[label]).slice(0,14)}</text>`;
+  });
+  el.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%"><line class="axis" x1="${p}" y1="${h-p}" x2="${w-p}" y2="${h-p}"/>${bars}${labels}</svg>`;
+}
+function table() {
+  const rows = DATA.topCustomers;
+  document.querySelector('#customers').innerHTML = '<thead><tr><th>Customer</th><th>Segment</th><th>Sales</th><th>Profit</th><th>Orders</th></tr></thead><tbody>' +
+    rows.map(r => `<tr><td>${r['Customer Name']}</td><td>${r.Segment}</td><td>${fmtMoney(r.Sales)}</td><td>${fmtMoney(r.Profit)}</td><td>${r.Orders}</td></tr>`).join('') + '</tbody>';
+}
+kpis();
+lineChart(document.querySelector('#trend'), DATA.monthly, 'Year Month', [{key:'Sales', color:'#0f766e'}, {key:'Profit', color:'#f97316'}]);
+barChart(document.querySelector('#regions'), DATA.region, 'Region', [{key:'Sales', color:'#2563eb'}, {key:'Profit', color:'#16a34a'}]);
+barChart(document.querySelector('#subcats'), DATA.category, 'Sub-Category', [{key:'Sales', color:'#0f766e'}, {key:'Profit', color:'#f97316'}], {every:1});
+barChart(document.querySelector('#states'), DATA.state, 'State', [{key:'Sales', color:'#2563eb'}, {key:'Profit', color:'#dc2626'}]);
+barChart(document.querySelector('#discount'), DATA.discount, 'Discount Band', [{key:'Sales', color:'#0f766e'}, {key:'Profit', color:'#f97316'}]);
+table();
+</script>
+</body>
+</html>

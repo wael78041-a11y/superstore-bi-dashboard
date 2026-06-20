@@ -1,0 +1,16 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Excel temporary lock files
+~$*.xlsx
+
+# Python
+__pycache__/
+*.pyc
+
+# Power BI local cache files
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+
