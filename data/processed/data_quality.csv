@@ -1,0 +1,12 @@
+Check,Result
+Source file,Sample-Superstore.xlsx
+Source URL,https://github.com/PacktPublishing/Getting-Started-with-Tableau-2019.2/blob/master/Chapter03/Sample-Superstore.xlsx
+Initial order rows,9994
+Initial order columns,21
+Dropped duplicate order rows,0
+Missing values before cleaning,11
+Missing Postal Code values filled,11
+Unique returned orders,296
+Cleaned order rows,9994
+Cleaned missing values,0
+Order date range,2015-01-03 to 2018-12-30
