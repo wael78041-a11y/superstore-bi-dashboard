@@ -58,7 +58,7 @@ Built an interactive dashboard with a year slicer, KPI cards, and three charts c
 
 ## Dashboard Preview
 
-![Dashboard](docs/dashboard_preview.png)
+![Dashboard](dashboard_preview.png)
 
 ---
 
